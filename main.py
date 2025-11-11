@@ -13,7 +13,7 @@ LOG_DIR.mkdir(exist_ok=True)
 class Honeypot:
     def __init__(self, bind_ip="0.0.0.0", ports=None):
         self.bind_ip = bind_ip
-        self.ports = ports or [21, 22, 80, 443]  # Default ports to monitor
+        self.ports = ports or [2121, 2222, 8080, 8443]  # Default ports to monitor
         self.active_connections = {}
         self.log_file = LOG_DIR / f"honeypot_{datetime.datetime.now().strftime('%Y%m%d')}.json"
 
