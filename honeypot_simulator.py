@@ -16,26 +16,30 @@ class HoneypotSimulator:
         self.target_ip = target_ip
         self.intensity = intensity
 
-        # Common ports that attackers often probe
-        self.target_ports = [21, 22, 23, 25, 80, 443, 3306, 5432]
+        # Updated ports to match honeypot (custom ones)
+        self.target_ports = [2121, 2222, 8080, 8443]
 
-        # Dictionary of common commands used by attackers for different services
+        # Updated attack patterns to target honeypot services
         self.attack_patterns = {
-            21: [  # FTP commands
+            2121: [  # FTP-like simulation
                 "USER admin\r\n",
                 "PASS admin123\r\n",
                 "LIST\r\n",
                 "STOR malware.exe\r\n"
             ],
-            22: [  # SSH attempts
+            2222: [  # SSH-like simulation
                 "SSH-2.0-OpenSSH_7.9\r\n",
                 "admin:password123\n",
                 "root:toor\n"
             ],
-            80: [  # HTTP requests
+            8080: [  # HTTP simulation
                 "GET / HTTP/1.1\r\nHost: localhost\r\n\r\n",
                 "POST /admin HTTP/1.1\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n",
                 "GET /wp-admin HTTP/1.1\r\nHost: localhost\r\n\r\n"
+            ],
+            8443: [  # HTTPS-like simulation
+                "GET /secure HTTP/1.1\r\nHost: localhost\r\n\r\n",
+                "POST /login HTTP/1.1\r\nHost: localhost\r\nContent-Length: 0\r\n\r\n"
             ]
         }
 
@@ -53,13 +57,13 @@ class HoneypotSimulator:
         try:
             # Create a new socket connection
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            sock.settimeout(3)
+            sock.settimeout(5)  # Increased timeout for better reliability
 
             print(f"[*] Attempting connection to {self.target_ip}:{port}")
             sock.connect((self.target_ip, port))
 
             # Get banner if any
-            banner = sock.recv(1024) #first server response
+            banner = sock.recv(1024)
             print(f"[+] Received banner from port {port}: {banner.decode('utf-8', 'ignore').strip()}")
 
             # Send attack patterns based on the port
@@ -75,7 +79,7 @@ class HoneypotSimulator:
                     except socket.timeout:
                         print(f"[-] No response received from port {port}")
 
-                    # Add realistic delay between commands to simulate real behaviour
+                    # Add realistic delay between commands
                     time.sleep(random.uniform(*self.intensity_settings[self.intensity]["delay_range"]))
 
             sock.close()
@@ -89,8 +93,7 @@ class HoneypotSimulator:
 
     def simulate_port_scan(self):
         """
-        Simulates a basic port scan across common ports
-        goes through all available ports and tries to attack
+        Simulates a basic port scan across all honeypot ports
         """
         print(f"\n[*] Starting port scan simulation against {self.target_ip}")
         for port in self.target_ports:
@@ -110,18 +113,18 @@ class HoneypotSimulator:
             for password in common_passwords:
                 try:
                     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                    sock.settimeout(2)
+                    sock.settimeout(4)
                     sock.connect((self.target_ip, port))
 
-                    if port == 21:  # FTP
+                    if port == 2121:  # FTP
                         sock.send(f"USER {username}\r\n".encode())
                         sock.recv(1024)
                         sock.send(f"PASS {password}\r\n".encode())
-                    elif port == 22:  # SSH
+                    elif port == 2222:  # SSH
                         sock.send(f"{username}:{password}\n".encode())
 
                     sock.close()
-                    time.sleep(random.uniform(0.1, 0.3))
+                    time.sleep(random.uniform(0.2, 0.5))
 
                 except Exception as e:
                     print(f"[-] Error in brute force attempt: {e}")
@@ -140,12 +143,11 @@ class HoneypotSimulator:
         ) as executor:
             while time.time() < end_time:
                 # Mix of different attack patterns
-                # Runs multiple attacks concurrently
                 simulation_choices = [
                     lambda: self.simulate_port_scan(),
-                    lambda: self.simulate_brute_force(21),
-                    lambda: self.simulate_brute_force(22),
-                    lambda: self.simulate_connection(80)
+                    lambda: self.simulate_brute_force(2121),
+                    lambda: self.simulate_brute_force(2222),
+                    lambda: self.simulate_connection(8080)
                 ]
 
                 # Randomly choose and execute an attack pattern
