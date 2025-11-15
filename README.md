@@ -1,81 +1,209 @@
-🛡️ Honeypot Project
-====================
+🛡 Cybersecurity Honeypot System
 
-This Python project creates a honeypot that emulates multiple services like FTP, SSH, and HTTP to capture and log suspicious activity. It also includes a simulator to generate attacks and a log analyzer to extract insights from the activity.
+A lightweight, extensible Python-based honeypot for educational and research use.
+This system captures attacker activity, simulates threat behavior, analyzes logs, and visualizes attacks using a modern SOC-style web dashboard.
+
+🚀 Project Overview
+
+This project implements a complete, modular honeypot platform consisting of:
+
+✅ 1. Multi-Port Honeypot Listener (main.py)
+
+Emulates commonly targeted network services and logs all attacker interactions.
+
+✅ 2. Attack Simulator (honeypot_simulator.py)
+
+Generates realistic cyberattacks for testing the honeypot safely.
+
+✅ 3. Log Analyzer (analyze_logs.py)
+
+Extracts intelligence such as attacker behavior, port usage, payload frequency, and sophistication scores.
+
+✅ 4. Real-Time SOC Dashboard (web_dashboard/)
+
+Flask + Chart.js web interface that displays live attack stats, recent logs, port distribution, and behavioral charts.
+
+This system is built for learning, demonstration, research, and academic presentations.
 
 ✨ Features
-----------
+🔥 Honeypot Listener
 
-*   Listens on common ports (21, 22, 80, 443) to emulate services
-    
-*   Logs all incoming connections, payloads, timestamps, and remote IPs in JSON format
-    
-*   Attack simulator to test the honeypot with port scans and brute force attacks
-    
-*   Advanced log analysis providing:
-    
-    *   Most active IPs 🌐
-        
-    *   Port targeting statistics 🔢
-        
-    *   Hourly attack patterns ⏰
-        
-    *   Payload patterns and attacker sophistication 🕵️
-        
+Emulates ports: 2121 (FTP), 2222 (SSH), 8080 (HTTP), 8443 (HTTPS)
+
+Logs every connection with:
+
+Timestamp
+
+Remote IP
+
+Port targeted
+
+Payload/command
+
+Stores logs as JSON in honeypot_logs/
+
+⚔️ Attack Simulator
+
+Simulates realistic attacks including:
+
+Port scanning
+
+Brute-force attempts
+
+FTP/SSH command injections
+
+HTTP payloads
+
+Multiple threads & velocity based on intensity level
+
+Run safely — no external attackers needed.
+
+📊 Advanced Log Analyzer
+
+Outputs:
+
+Top attacker IPs
+
+Most targeted ports
+
+Hourly attack distribution
+
+Payload frequencies
+
+Sophistication analysis
+
+Timeline of attack attempts
+
+🖥 SOC Web Dashboard
+
+Built using Flask + Bootstrap + Chart.js
+
+Displays:
+
+Total attacks
+
+Unique IP addresses
+
+Most targeted ports
+
+Recent attack logs
+
+Line chart: attacks over time
+
+Pie chart: port distribution
+
+Auto-refresh every 3 seconds.
+
+Directory:
+
+web_dashboard/
+ ├── dashboard.py
+ └── templates/
+      └── index.html
+
+📁 Project Structure
+Cybersecurity-Honeypot/
+│
+├── main.py                       # Honeypot server listener
+├── honeypot_simulator.py         # Attack generator
+├── analyze_logs.py               # Log analyzer
+│
+├── honeypot_logs/                # Stored JSON logs
+│
+├── web_dashboard/
+│     ├── dashboard.py            # Flask backend
+│     └── templates/
+│            └── index.html       # SOC Dashboard UI
+│
+├── README.md
+└── requirements.txt (optional)
 
 ⚙️ Setup
---------
+1️⃣ Install Python
 
-1.  Make sure Python 3.x is installed
-    
-2.  Place all three scripts (main.py, honeypot\_simulator.py, analyze\_logs.py) in the same folder
-    
-3.  No extra libraries needed, all are standard Python modules
-    
+Python 3.10+ recommended.
 
-🚀 How to Run
--------------
+2️⃣ Install dependencies
 
-1️⃣ Start the honeypot server:
+Only Flask + chart rendering requires installs:
 
-`   python main.py   `
+pip install flask
 
-The honeypot will start listening on the configured ports and log all activity in a JSON file like honeypot\_YYYYMMDD.json in the same folder
 
-2️⃣ Run the attack simulator:
+Everything else uses Python built-ins.
 
-`   python honeypot_simulator.py --target 127.0.0.1 --intensity medium --duration 300   `
+🧪 How to Run the Project
+1. Start the Honeypot Listener
+python main.py
 
-*   \--target : IP of the honeypot (default 127.0.0.1)
-    
-*   \--intensity : Attack intensity (low, medium, high)
-    
-*   \--duration : Duration of simulation in seconds
-    
 
-3️⃣ Analyze the logs:
+It will start simulated services on:
 
-`   python analyze_logs.py honeypot_YYYYMMDD.json   `
+Service	Port
+FTP	2121
+SSH	2222
+HTTP	8080
+HTTPS	8443
 
-Replace YYYYMMDD with the date of your log file. The analysis will show:
+Logs will appear in:
 
-*   Top attacker IPs 🌐
-    
-*   Port targeting and unique payloads 🔢
-    
-*   Hourly attack distribution ⏰
-    
-*   Attacker sophistication 🕵️
-    
-*   Most common payload patterns 💻
-    
+honeypot_logs/honeypot_YYYYMMDD.json
 
-📝 Notes
---------
+2. Run the Attack Simulator
+python honeypot_simulator.py --target 127.0.0.1 --intensity medium --duration 60
 
-*   The honeypot is safe to run locally
-    
-*   Always start main.py first before running the simulator
-    
-*   Logs are saved in JSON format in the same folder for easy analysis
-    
+Flags:
+Flag	Meaning
+--target	IP of honeypot
+--intensity	low / medium / high
+--duration	seconds
+3. Run the Log Analyzer
+python analyze_logs.py honeypot_logs/honeypot_YYYYMMDD.json
+
+
+Outputs structured terminal report.
+
+4. Start the SOC Web Dashboard
+
+Navigate into folder:
+
+cd web_dashboard
+python dashboard.py
+
+
+Visit:
+
+http://127.0.0.1:5000
+
+
+You will see:
+
+Attack charts
+
+Live updates
+
+Port distribution
+
+Recent logs list
+
+🔍 Use Cases
+
+Academic project
+
+Cybersecurity demonstrations
+
+SOC training
+
+Log analysis research
+
+Detecting attacker behavior patterns
+
+🔒 Safety Notes
+
+This honeypot is local-only by design
+
+No risk of exposing system to real hackers
+
+Attack simulator replaces real threat actors
+
+Safe for student and classroom use
