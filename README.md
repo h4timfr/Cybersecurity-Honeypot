@@ -94,30 +94,6 @@ Pie chart: port distribution
 
 Auto-refresh every 3 seconds.
 
-Directory:
-
-web_dashboard/
- ├── dashboard.py
- └── templates/
-      └── index.html
-
-📁 Project Structure
-Cybersecurity-Honeypot/
-│
-├── main.py                       # Honeypot server listener
-├── honeypot_simulator.py         # Attack generator
-├── analyze_logs.py               # Log analyzer
-│
-├── honeypot_logs/                # Stored JSON logs
-│
-├── web_dashboard/
-│     ├── dashboard.py            # Flask backend
-│     └── templates/
-│            └── index.html       # SOC Dashboard UI
-│
-├── README.md
-└── requirements.txt (optional)
-
 ⚙️ Setup
 1️⃣ Install Python
 
@@ -129,13 +105,11 @@ Only Flask + chart rendering requires installs:
 
 pip install flask
 
-
 Everything else uses Python built-ins.
 
 🧪 How to Run the Project
 1. Start the Honeypot Listener
 python main.py
-
 
 It will start simulated services on:
 
